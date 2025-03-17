@@ -1,0 +1,27 @@
+# 忽略所有 build 輸出目錄
+/build/
+/api/build/
+**/build/
+
+# IntelliJ IDEA 相關檔案
+/.idea/
+*.iml
+
+# 其他編譯器或 IDE 產生的輸出
+/out/
+
+# 作業系統自動產生的隱藏檔
+.DS_Store
+Thumbs.db
+
+# 日誌檔與暫存檔
+*.log
+*.tmp
+*.swp
+
+# Gradle 緩存目錄
+/.gradle/
+
+# 本地環境設定檔（含敏感資訊）不要上傳版本庫
+/local.properties
+*.jks

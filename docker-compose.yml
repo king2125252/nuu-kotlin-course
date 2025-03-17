@@ -1,0 +1,41 @@
+services:
+  c_mysql:
+    image: mysql:latest
+    container_name: c_mysql
+    restart: no
+    tty: true
+    ports:
+      - "5000:3306"
+    environment:
+      MYSQL_DATABASE: course
+      MYSQL_ROOT_PASSWORD: "@@course!!"
+      MYSQL_USER: jack
+      MYSQL_PASSWORD: "@@jack!!"
+    volumes:
+      - mysql:/var/lib/mysql # 掛載名為 dbdata 的資料卷到容器的 /var/lib/mysql，確保資料持久化
+    networks:
+      - network
+
+  api:
+    build:
+      # 依據當前目錄的 Dockerfile 建立映像檔
+      context: ./
+      dockerfile: docker/api/Dockerfile
+    container_name: api
+    labels:
+      com.jetbrains.devenv: "true"  # 這個標籤可以讓 IntelliJ 識別為 dev container，請參考 IntelliJ 文檔確認正確的標籤名稱
+    working_dir: /api
+    ports:
+      - "5001:8080"
+    volumes:
+      - ./api:/api # 掛載本機專案目錄到容器的 /app，開發時即時同步程式碼
+    networks:
+      - network
+    command: sleep infinity
+
+networks:
+  network:
+    driver: bridge
+
+volumes:
+  mysql: # # 定義一個名為 dbdata 的資料卷，管理容器資料存儲
