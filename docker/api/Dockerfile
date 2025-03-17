@@ -48,5 +48,5 @@ RUN echo "${ENV_USER}:@@apicourse!!" | chpasswd
 # 切換到非 root 使用者，確保後續操作以較低權限運行
 USER ${ENV_USER}
 
-# 設定容器啟動後預設執行 bash
-CMD ["bash"]
+# 啟動 spring boot
+CMD ["./gradlew", "bootRun"]

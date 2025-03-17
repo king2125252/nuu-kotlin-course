@@ -2,7 +2,7 @@ services:
   c_mysql:
     image: mysql:latest
     container_name: c_mysql
-    restart: no
+    restart: always
     tty: true
     ports:
       - "5002:3306"
@@ -19,19 +19,40 @@ services:
   api:
     build:
       # 依據當前目錄的 Dockerfile 建立映像檔
-      context: ./
-      dockerfile: docker/api/Dockerfile
+      context: ./docker/api
+      dockerfile: Dockerfile
     container_name: api
-    labels:
-      com.jetbrains.devenv: "true"  # 這個標籤可以讓 IntelliJ 識別為 dev container，請參考 IntelliJ 文檔確認正確的標籤名稱
+    restart: always
     working_dir: /api
     ports:
-      - "5001:8080"
+      - "5004:8080"
     volumes:
       - ./api:/api # 掛載本機專案目錄到容器的 /app，開發時即時同步程式碼
     networks:
       - network
-    command: sleep infinity
+
+  c_web:
+    # 直接使用主機網路，不使用橋接
+    # 也不用使用 port 映射
+    # network_mode: host
+    restart: always # 宿主主機重開機時自動啟動
+    container_name: c_web
+    # image: ubuntu-python:latest # 指定現有的 image 名稱
+    build:
+      context: ./docker/web # 設定在 build 時候 路徑在哪裡，以這個路徑為基礎，只會影響 build 下的參數
+      dockerfile: Dockerfile # 依照該目錄下的 Dockerfile 來建立 image
+      args:
+        # 自訂參數，可以在 Dockerfile 使用
+        ARG_SITE_DOCUMENT_ROOT: /home/service/web/dist
+        # 設定 nginx 配置檔案的來源
+        ARG_NGINX_ENV_CONF: nginx.conf
+    volumes:
+      - ./web:/home/service/web:cached # 映射本地資料夾到容器內
+    ports:
+      - "5000:80"
+    tty: true # docker run -t
+    networks:
+      - network
 
 networks:
   network:
