@@ -3,5 +3,5 @@
   "dockerFile": "../docker/api/Dockerfile",
   "workspaceFolder": "/api",
   "workspaceMount": "source=${localWorkspaceFolder}/api,target=/api,type=bind,consistency=cached",
-  "runArgs": ["--name", "kotline-backend-dev","-p", "5001:8080"]
+  "runArgs": ["--name", "kotline-backend-dev","-p", "5001:8080", "--add-host=host.docker.internal:host-gateway"]
 }
